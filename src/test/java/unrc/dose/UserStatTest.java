@@ -149,7 +149,9 @@ private static final Logger log = LoggerFactory.getLogger(UserStatTest.class);
 		UserStat userStat = UserStat.createUserStat(u.getInteger("id"));
 		userStat.set("current_points", 415);
 		userStat.updatePoints(-15);
-		assertEquals(userStat.getCurrentPoints(), 400);
+		assertEquals(400, userStat.getCurrentPoints());
+		userStat.delete();
+		u.delete();
 	}
 
     /**
@@ -166,7 +168,9 @@ private static final Logger log = LoggerFactory.getLogger(UserStatTest.class);
 		UserStat userStat = UserStat.createUserStat(u.getInteger("id"));
 		userStat.set("current_points", 415);
 		userStat.updatePoints(15);
-		assertEquals(userStat.getCurrentPoints(), 430);
+		assertEquals(430, userStat.getCurrentPoints());
+		userStat.delete();
+		u.delete();
 	}
 
 	/**
