@@ -74,8 +74,9 @@ static {
     /**
      * Create the statistics for a given user.
      * @param id The id of the user who statistics we will create.
+     * @return the created user statistics.
      */
-    public static void createUserStat(final int id) {
+    public static UserStat createUserStat(final int id) {
         UserStat stat = new UserStat();
         stat.set("user_id", id);
         stat.set("created_challenges", 0);
@@ -88,6 +89,7 @@ static {
         } catch (DBException e) {
             Base.rollbackTransaction();
         }
+        return stat;
     }
 
     /**
@@ -99,4 +101,11 @@ static {
         return UserStat.findFirst("user_id = ?", user.getId());
     }
 
+    /**
+     * This method update the user score by adding a number of points.
+     * @param points number of points to add
+    */
+    public void updatePoints(final int points) {
+        this.set("current_points", getCurrentPoints() + points);
+    }
 }

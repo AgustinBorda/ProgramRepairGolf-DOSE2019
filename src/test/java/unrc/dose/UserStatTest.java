@@ -135,6 +135,44 @@ private static final Logger log = LoggerFactory.getLogger(UserStatTest.class);
 		u.delete();
 	}
 
+    /**
+     * Test the method updatePoints by decreasing number of points
+     * UserStat class.
+    */
+    @Test
+    public void decreaseScore() {
+		User u = new User();
+		u.set("password", "JohnDoe");
+		u.set("username", "JohnDecrease");
+		u.set("email_address", "JohnDecrease@gmail.com");
+		u.save();
+		UserStat userStat = UserStat.createUserStat(u.getInteger("id"));
+		userStat.set("current_points", 415);
+		userStat.updatePoints(-15);
+		assertEquals(400, userStat.getCurrentPoints());
+		userStat.delete();
+		u.delete();
+	}
+
+    /**
+     * Test the method updatePoints by increasing number of points
+     * UserStat class.
+    */
+    @Test
+    public void increaseScore() {
+		User u = new User();
+		u.set("password", "JohnDoe");
+		u.set("username", "JohnIncrease");
+		u.set("email_address", "JohnIncrease@gmail.com");
+		u.save();
+		UserStat userStat = UserStat.createUserStat(u.getInteger("id"));
+		userStat.set("current_points", 415);
+		userStat.updatePoints(15);
+		assertEquals(430, userStat.getCurrentPoints());
+		userStat.delete();
+		u.delete();
+	}
+
 	/**
 	 * Test the method showAllUserStat
 	 * UserStat class.
