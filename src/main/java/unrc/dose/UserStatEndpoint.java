@@ -10,6 +10,7 @@ import com.beerboy.ss.SparkSwagger;
 import com.beerboy.ss.rest.Endpoint;
 
 import spark.ExceptionHandler;
+import spark.Filter;
 
 /**
  * Endpoint for UserStat.
@@ -21,7 +22,7 @@ public final class UserStatEndpoint implements Endpoint {
     static final Logger LOG = LoggerFactory.getLogger(UserStatEndpoint.class);
 
     /** main namespace of this endpoint. */
-    private static final String NAME_SPACE = "/userstats";
+    private static final String NAME_SPACE = "/userstats/:id/stat";
 
     @Override
     public void bind(final SparkSwagger restApi) {
@@ -37,61 +38,67 @@ public final class UserStatEndpoint implements Endpoint {
                 ),
             (q, a) -> LOG.info("Logging Received request for UserStat Rest API")
         )
-        .get(
-            path("/export")
-            .withDescription("Will return all UserStats")
-            .withResponseType(String.class),
-            (req, res) -> UserStatService.getBests(null)
-        )
-        .get(
-            path("/ranking")
-            .withDescription("Will return the best scores")
-            .withQueryParam()
-            .withName("number")
-            .withObject(Integer.class)
-            .withDescription("Number of user scores to get").and()
-            .withResponseType(String.class),
-            (req, res) -> UserStatService.getBests(req.queryParams("number"))
-        )
+        .before((req, res) -> {
+            System.out.println(req.params("id"));
+            if (UserStat.getUserStat(Integer.valueOf(req.params("id"))) == null) 
+                throw new UserStatNotFoundException(req.queryParams("id"));
+        })
+//        .get(
+//            path("/export")
+//            .withDescription("Will return all UserStats")
+//            .withResponseType(String.class),
+//            (req, res) -> UserStatService.getBests(null)
+//        )
+//        .get(
+//            path("/ranking")
+//            .withDescription("Will return the best scores")
+//            .withQueryParam()
+//            .withName("number")
+//            .withObject(Integer.class)
+//            .withDescription("Number of user scores to get").and()
+//            .withResponseType(String.class),
+//            (req, res) -> UserStatService.getBests(req.queryParams("number"))
+//        )
         .get(
             path("/score")
             .withDescription("Will return the score of a user")
-            .withQueryParam()
+            .withPathParam()
             .withName("id")
             .withObject(Integer.class)
             .withDescription("id of the user").and()
             .withResponseType(String.class),
             (req, res) -> UserStatService.getScore(req.queryParams("id"))
         )
-        .delete(
-            path("")
-            .withDescription("Will delete the userStat of a user")
-            .withQueryParam()
-            .withName("id")
-            .withObject(Integer.class)
-            .withDescription("id of the user").and()
-            .withResponseType(String.class),
-            (req, res) -> UserStatService.delete(req.queryParams("id"))
-         )
-        .get(
-            path("")
-            .withDescription("Will return the userStat of a user")
-            .withQueryParam()
-            .withName("id")
-            .withObject(Integer.class)
-            .withDescription("id of the user").and()
-            .withResponseType(String.class),
-            (req, res) -> UserStatService.getUserStat(req.queryParams("id"))
-        )
-        .post(
-            path("")
-            .withDescription("Creates a new UserStat")
-            .withQueryParam()
-            .withName("id")
-            .withObject(Integer.class)
-            .withDescription("id of UserStat's user").and()
-            .withResponseType(UserStat.class),
-            (req, res) -> UserStatService.createUserStat(req.queryParams("id"))
-        );
+//        .delete(
+//            path("")
+//            .withDescription("Will delete the userStat of a user")
+//            .withQueryParam()
+//            .withName("id")
+//            .withObject(Integer.class)
+//            .withDescription("id of the user").and()
+//            .withResponseType(String.class),
+//            (req, res) -> UserStatService.delete(req.queryParams("id"))
+//         )
+//        .get(
+//            path("")
+//            .withDescription("Will return the userStat of a user")
+//            .withQueryParam()
+//            .withName("id")
+//            .withObject(Integer.class)
+//            .withDescription("id of the user").and()
+//            .withResponseType(String.class),
+//            (req, res) -> UserStatService.getUserStat(req.queryParams("id"))
+//        )
+//        .post(
+//            path("")
+//            .withDescription("Creates a new UserStat")
+//            .withQueryParam()
+//            .withName("id")
+//            .withObject(Integer.class)
+//            .withDescription("id of UserStat's user").and()
+//            .withResponseType(UserStat.class),
+//            (req, res) -> UserStatService.createUserStat(req.queryParams("id"))
+//        )
+        ;
     }
 }
